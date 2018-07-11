@@ -48,7 +48,9 @@ namespace FormatProviderLib
         /// </summary>
         /// <param name="format">String format</param>
         /// <param name="arg">Object need to be represented</param>
-        /// <param name="formatProvider">String format provider</param>
+        /// <param name="formatProvider">String format provider</param>        
+        /// <exception cref="ArgumentNullException">Throws when arg is equal to null.</exception>
+        /// <exception cref="ArgumentException">Throws when arg isn't Customer.</exception>
         /// <returns><paramref name="arg"/> string representation in specific format</returns>
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
