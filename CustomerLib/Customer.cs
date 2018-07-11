@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace CustomerLib
 {
@@ -12,21 +13,72 @@ namespace CustomerLib
         private const string FORMAT_BY_DEFAULT = "G";
         #endregion
 
-        #region Properties
+        #region Properties and fields
+
+        private string _name;
+        private string _contactPhone;
+        private decimal _revenue;
+
         /// <summary>
         /// Public property that describe customer name
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (!IsLettersOnly(value))
+                {
+                    throw new FormatException($"{nameof(value)} is invalid");
+                }
+
+                _name = value;
+            }
+        }
 
         /// <summary>
         /// Public property that describe customer contact phone
         /// </summary>
-        public string ContactPhone { get; set; }
+        public string ContactPhone
+        {
+            get
+            {
+                return _contactPhone;
+            }
+            set
+            {
+                if (!IsDigitsOnly(value))
+                {
+                    throw new FormatException($"{nameof(value)} is invalid");
+                }
+
+                _contactPhone = value;
+            }
+        }
+
 
         /// <summary>
         /// Public property that describe customer revenue
         /// </summary>
-        public decimal Revenue { get; set; }
+        public decimal Revenue
+        {
+            get
+            {
+                return _revenue;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException($"{nameof(value)} is invalid");
+                }
+
+                _revenue = value;
+            }
+        }
         #endregion
 
         #region Constructors
@@ -105,22 +157,32 @@ namespace CustomerLib
             {
                 case "G":
                 case "NRP":
-                    return $"Customer record: {Name}, {Revenue.ToString("N", formatProvider)}, {ContactPhone}";
+                    return $"Customer record: {_name}, {_revenue.ToString("N", formatProvider)}, {_contactPhone}";
                 case "N":
-                    return $"Customer record: {Name}";
+                    return $"Customer record: {_name}";
                 case "R":
-                    return $"Customer record: {Revenue.ToString("N", formatProvider)}";
+                    return $"Customer record: {_revenue.ToString("N", formatProvider)}";
                 case "P":
-                    return $"Customer record: {ContactPhone}";
+                    return $"Customer record: {_contactPhone}";
                 case "NR":
-                    return $"Customer record: {Name}, {Revenue.ToString("N", formatProvider)}";
+                    return $"Customer record: {_name}, {_revenue.ToString("N", formatProvider)}";
                 case "NP":
-                    return $"Customer record: {Name}, {ContactPhone}";
+                    return $"Customer record: {_name}, {_contactPhone}";
                 case "RP":
-                    return $"Customer record: {Revenue.ToString("N", formatProvider)}, {ContactPhone}";
+                    return $"Customer record: {_revenue.ToString("N", formatProvider)}, {_contactPhone}";
                 default:
                     throw new FormatException($"{nameof(format)} is not supported.");
             }
+        }
+
+        private bool IsDigitsOnly(string str)
+        {
+            return Regex.IsMatch(str, @"^\+\d+\s(\(\d+\))\s\d{3}-\d{4}$");
+        }
+
+        private bool IsLettersOnly(string str)
+        {
+            return Regex.IsMatch(str, @"^([A-Z][a-z]*\s)*[A-Z][a-z]*$");
         }
         #endregion
     }
