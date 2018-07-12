@@ -112,7 +112,7 @@ namespace CustomerLib
         /// </summary>
         /// <returns>Default <see cref="Customer"/> string represantation</returns>
         public override string ToString()
-            => $"Customer record: {Name} {Revenue.ToString("N", CultureInfo.InvariantCulture)} {ContactPhone}";
+            => $"Customer record: {Name}, {Revenue.ToString("N", CultureInfo.InvariantCulture)}, {ContactPhone}";
 
         /// <summary>
         /// <see cref="Customer"/> string represantation
