@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Text;
 using CustomerLib;
@@ -48,7 +48,7 @@ namespace FormatProviderLib
         /// </summary>
         /// <param name="format">String format</param>
         /// <param name="arg">Object need to be represented</param>
-        /// <param name="formatProvider">String format provider</param>        
+        /// <param name="formatProvider">String format provider</param>
         /// <exception cref="ArgumentNullException">Throws when arg is equal to null.</exception>
         /// <exception cref="ArgumentException">Throws when arg isn't Customer.</exception>
         /// <returns><paramref name="arg"/> string representation in specific format</returns>
@@ -108,48 +108,9 @@ namespace FormatProviderLib
                     return $"Customer record: {customer.Name}, {customer.Revenue.ToString("C", formatProvider)}";
                 case "RCP":
                     return $"Customer record: {customer.Revenue.ToString("C", formatProvider)}, {customer.ContactPhone}";
-                case "W":
-                    return $"Customer record: {customer.Name}, {StringToWords(customer.Revenue.ToString())}, {StringToWords(customer.ContactPhone)}";
-                case "RW":
-                    return $"Customer record: {StringToWords(customer.Revenue.ToString())}";
-                case "PW":
-                    return $"Customer record: {StringToWords(customer.ContactPhone)}";
-                case "NPW":
-                    return $"Customer record: {customer.Name}, {StringToWords(customer.ContactPhone)}";
-                case "NRW":
-                    return $"Customer record: {customer.Name}, {StringToWords(customer.Revenue.ToString())}";
                 default:
                     throw new FormatException($"{nameof(format)} is not supported.");
             }
-        }
-
-        /// <summary>
-        /// Represent <paramref name="input"/> string in words-form
-        /// </summary>
-        /// <param name="input">Input string</param>
-        /// <returns><paramref name="input"/> string in words-form</returns>
-        private string StringToWords(string input)
-        {
-            StringBuilder result = new StringBuilder();
-
-            for (int i = 0; i < input.Length; i++)
-            {
-                int index = _numberString.IndexOf(input[i]);
-
-                if (index == -1)
-                {
-                    continue;
-                }
-
-                if (result.Length > 0)
-                {
-                    result.Append(' ');
-                }
-
-                result.Append(_numberWords[index]);
-            }
-
-            return result.ToString();
         }
         #endregion
     }
