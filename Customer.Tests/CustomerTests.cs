@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,12 +60,7 @@ namespace Customer.Tests
         [TestCase("RC", ExpectedResult = "Customer record: ¤1,234,567.00")]
         [TestCase("NRC", ExpectedResult = "Customer record: Jeffrey Richter, ¤1,234,567.00")]
         [TestCase("RCP", ExpectedResult = "Customer record: ¤1,234,567.00, +1 (425) 555-0100")]
-        [TestCase("W", ExpectedResult = "Customer record: Jeffrey Richter, one two three four five six seven, one four two five five five five minus zero one zero zero")]
-        [TestCase("RW", ExpectedResult = "Customer record: one two three four five six seven")]
-        [TestCase("PW", ExpectedResult = "Customer record: one four two five five five five minus zero one zero zero")]
-        [TestCase("NPW", ExpectedResult = "Customer record: Jeffrey Richter, one four two five five five five minus zero one zero zero")]
-        [TestCase("NRW", ExpectedResult = "Customer record: Jeffrey Richter, one two three four five six seven")]
-        public string Format_IsCorrect(string format)
+        public string Format_Standalone_IsCorrect(string format)
         {
             CustomerFormatProvider provider = new CustomerFormatProvider();
             return provider.Format(format, new CustomerLib.Customer("Jeffrey Richter", 1234567, "+1 (425) 555-0100"), CultureInfo.InvariantCulture);
@@ -76,12 +71,7 @@ namespace Customer.Tests
         [TestCase("RC", "ru-RU", ExpectedResult = "Customer record: 1 234 567,00 ₽")]
         [TestCase("NRC", "en-US", ExpectedResult = "Customer record: Jeffrey Richter, $1,234,567.00")]
         [TestCase("RCP", "ru-RU", ExpectedResult = "Customer record: 1 234 567,00 ₽, +1 (425) 555-0100")]
-        [TestCase("W", "ru-RU", ExpectedResult = "Customer record: Jeffrey Richter, one two three four five six seven, one four two five five five five minus zero one zero zero")]
-        [TestCase("RW", "en-US", ExpectedResult = "Customer record: one two three four five six seven")]
-        [TestCase("PW", "ru-RU", ExpectedResult = "Customer record: one four two five five five five minus zero one zero zero")]
-        [TestCase("NPW", "ru-RU", ExpectedResult = "Customer record: Jeffrey Richter, one four two five five five five minus zero one zero zero")]
-        [TestCase("NRW", "en-US", ExpectedResult = "Customer record: Jeffrey Richter, one two three four five six seven")]
-        public string Format_IsCorrect_WithCulture(string format, string culture)
+        public string Format_Standalone_IsCorrect_WithCulture(string format, string culture)
         {
             CustomerFormatProvider provider = new CustomerFormatProvider();
             return provider.Format(format, new CustomerLib.Customer("Jeffrey Richter", 1234567, "+1 (425) 555-0100"), new CultureInfo(culture));
@@ -89,8 +79,17 @@ namespace Customer.Tests
 
         [TestCase("DRERE")]
         [TestCase("HITHERE")]
-        public void Format_FormatIsNotSupported_FormatException(string format)
+        public void Format_Standalone_FormatIsNotSupported_FormatException(string format)
             => Assert.Throws<FormatException>(() => new CustomerFormatProvider().Format(format, new CustomerLib.Customer("Jeffrey Richter", 1234567, "+1 (425) 555-0100"), CultureInfo.InvariantCulture));
+
+        [TestCase("GC", ExpectedResult = "Customer record: Jeffrey Richter, 1 234 567,00 ₽, +1 (425) 555-0100")]
+        [TestCase("NRCP", ExpectedResult = "Customer record: Jeffrey Richter, 1 234 567,00 ₽, +1 (425) 555-0100")]
+        [TestCase("RC", ExpectedResult = "Customer record: 1 234 567,00 ₽")]
+        [TestCase("NRC", ExpectedResult = "Customer record: Jeffrey Richter, 1 234 567,00 ₽")]
+        [TestCase("RCP", ExpectedResult = "Customer record: 1 234 567,00 ₽, +1 (425) 555-0100")]
+        public string Format_IsCorrect(string format)
+            => string.Format(new CustomerFormatProvider(), $"{{0:{format}}}", new CustomerLib.Customer("Jeffrey Richter", 1234567, "+1 (425) 555-0100"));
+
         #endregion
     }
 }
